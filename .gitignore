@@ -1,0 +1,7 @@
+**/__pycache__
+**/.vscode/
+.git-bak
+codes/main/data.yml
+assets/img/edit
+assets/subsets.txt
+pylintrc

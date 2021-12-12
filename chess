@@ -1,0 +1,69 @@
+#!/bin/bash
+
+cd codes
+
+piece=
+around=
+color=
+mute=
+
+function usage {
+    cat <<EOM
+Usage: $(basename "$0") [OPTION]...
+    -h          Display help
+    -w          Load data with white
+    -b          Load data with black
+    -m          Open with mute mode
+    -d          Open dictionary
+    -p VALUE    Open dictionary with indicated piece
+    -a VALUE    Open dictionary with indicated piece around. Use with -p
+EOM
+}
+
+while getopts p:a:dhwbm opt
+do
+    case $opt in
+        p)
+            mode="d"
+            piece="$OPTARG"
+            ;;
+        a)
+            mode="d"
+            around="$OPTARG"
+            ;;
+        d)
+            mode="d"
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        w)
+            color="W"
+            ;;
+        b)
+            color="B"
+            ;;
+        m)
+            mute="m"
+            ;;
+        \?)
+            usage
+            exit 2
+            ;;
+    esac
+done
+
+if [ "$mode" == "d" ]
+then
+    python dict/play.py $piece $around
+else
+    python main/play.py $color $mute
+fi
+
+if [ $? == 1 ]
+then
+    exit 1
+else
+    exit 0
+fi

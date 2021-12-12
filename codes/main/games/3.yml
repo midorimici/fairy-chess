@@ -1,0 +1,177 @@
+- name: vs Pawns (white)
+  size: 8
+  castling: false
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: true
+  placers:
+    1: [[Pawn, W], [Pawn, W], [Pawn, W], [Queen, W], [King, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    2: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    3: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    4: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    7: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    8:
+      - [Rook, B]
+      - [Knight, B]
+      - [Bishop, B]
+      - [Queen, B]
+      - [King, B]
+      - [Bishop, B]
+      - [Knight, B]
+      - [Rook, B]
+
+- name: vs Pawns (black)
+  size: 8
+  castling: false
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: true
+  placers:
+    1:
+      - [Rook, W]
+      - [Knight, W]
+      - [Bishop, W]
+      - [Queen, W]
+      - [King, W]
+      - [Bishop, W]
+      - [Knight, W]
+      - [Rook, W]
+    2: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    5: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    6: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    7: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    8: [[Pawn, B], [Pawn, B], [Pawn, B], [Queen, B], [King, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+
+- name: vs Pawns +8 (white)
+  size: 8
+  castling: false
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: true
+  placers:
+    1: [[Pawn, W], [Pawn, W], [Pawn, W], [Queen, W], [King, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    2: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    3: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    4: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    5: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    7: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    8:
+      - [Rook, B]
+      - [Knight, B]
+      - [Bishop, B]
+      - [Queen, B]
+      - [King, B]
+      - [Bishop, B]
+      - [Knight, B]
+      - [Rook, B]
+
+- name: vs Pawns +8 (black)
+  size: 8
+  castling: false
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: true
+  placers:
+    1:
+      - [Rook, W]
+      - [Knight, W]
+      - [Bishop, W]
+      - [Queen, W]
+      - [King, W]
+      - [Bishop, W]
+      - [Knight, W]
+      - [Rook, W]
+    2: [[Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W], [Pawn, W]]
+    4: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    5: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    6: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    7: [[Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+    8: [[Pawn, B], [Pawn, B], [Pawn, B], [Queen, B], [King, B], [Pawn, B], [Pawn, B], [Pawn, B]]
+
+- name: Knights
+  size: 8
+  castling: false
+  promote2:
+    - Knight
+  asym: false
+  placers:
+    1: [Knight, Knight, Knight, Knight, King, Knight, Knight, Knight]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Bishops
+  size: 8
+  castling: false
+  promote2:
+    - Bishop
+  asym: false
+  placers:
+    1: [Bishop, Bishop, Bishop, Bishop, King, Bishop, Bishop, Bishop]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Rooks
+  size: 8
+  castling: false
+  promote2:
+    - Rook
+  asym: false
+  placers:
+    1: [Rook, Rook, Rook, Rook, King, Rook, Rook, Rook]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Queens
+  size: 8
+  castling: false
+  promote2:
+    - Queen
+  asym: false
+  placers:
+    1: [Queen, Queen, Queen, Queen, King, Queen, Queen, Queen]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Children
+  size: 8
+  castling: false
+  promote2:
+    - DevelopingMan
+  asym: false
+  placers:
+    1:
+      - DevelopingMan
+      - DevelopingMan
+      - DevelopingMan
+      - DevelopingMan
+      - King
+      - DevelopingMan
+      - DevelopingMan
+      - DevelopingMan
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Children 2
+  size: 8
+  castling: false
+  promote2:
+    - DevelopingMan2
+  asym: false
+  placers:
+    1:
+      - DevelopingMan2
+      - DevelopingMan2
+      - DevelopingMan2
+      - DevelopingMan2
+      - King
+      - DevelopingMan2
+      - DevelopingMan2
+      - DevelopingMan2
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]

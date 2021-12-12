@@ -1,0 +1,264 @@
+- name: Normal Chess
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Chess 960
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [null, null, null, null, null, null, null, null]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: with Unicorn & Tank
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Unicorn
+    - Tank
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Unicorn, Bishop, Queen, King, Tank, Knight, Rook]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: with Griffin & Laser Machine
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+    - Griffin
+    - LaserMachine
+  asym: false
+  placers:
+    1: [Rook, Griffin, Bishop, Queen, King, LaserMachine, Knight, Rook]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Basic Select 4
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Unicorn
+    - Tank
+    - Queen
+    - Griffin
+    - LaserMachine
+  asym: false
+  placers:
+    1: [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    2: [Griffin, Tank, Unicorn, LaserMachine, LaserMachine, Unicorn, Tank, Griffin]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Basic Select 6
+  size: 10
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Unicorn
+    - Tank
+    - Queen
+    - Griffin
+    - LaserMachine
+    - Rhinoceros
+    - Hippopotamus
+  asym: false
+  placers:
+    1: [Rook, Hippopotamus, Knight, Bishop, Queen, King, Bishop, Knight, Hippopotamus, Rook]
+    2:
+      - Griffin
+      - Rhinoceros
+      - Tank
+      - LaserMachine
+      - Unicorn
+      - Unicorn
+      - LaserMachine
+      - Tank
+      - Rhinoceros
+      - Griffin
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Noble Chess
+  size: 12
+  castling: false
+  promote2:
+    - Baron
+    - Baroness
+    - Viscount
+    - Viscountess
+    - Count
+    - Countess
+    - Marquis
+    - Marchioness
+    - Duke
+    - Duchess
+    - GrandDuke
+    - GrandDuchess
+    - Queen
+  asym: false
+  placers:
+    1:
+      - GrandDuchess
+      - Duchess
+      - Marchioness
+      - null
+      - Pfalzgräfin
+      - Queen
+      - King
+      - Pfalzgraf
+      - null
+      - Marquis
+      - Duke
+      - GrandDuke
+    2:
+      - Burggräfin
+      - Countess
+      - Viscountess
+      - null
+      - Baroness
+      - Landgräfin
+      - Landgraf
+      - Baron
+      - null
+      - Viscount
+      - Count
+      - Burggraf
+    3:
+      - Markgräfin
+      - null
+      - Baronetess
+      - null
+      - Knightess
+      - Esquiress
+      - Esquire
+      - Knight
+      - null
+      - Baronet
+      - null
+      - Markgraf
+    4: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Mini Chess
+  size: 6
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Bishop, Queen, King, Knight, Rook]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Math Chess
+  size: 12
+  castling: false
+  promote2:
+    - FibonacciLeaper
+    - TribonacciLeaper
+    - TetranacciLeaper
+    - PentanacciLeaper
+    - LucasLeaper
+    - PellLeaper
+    - PerrinLeaper
+    - PythagorasLeaper
+    - PrimeLeaper
+    - Queen
+  asym: false
+  placers:
+    1:
+      - PythagorasLeaper
+      - null
+      - PrimeLeaper
+      - null
+      - PerrinLeaper
+      - Queen
+      - King
+      - PerrinLeaper
+      - null
+      - PrimeLeaper
+      - null
+      - PythagorasLeaper
+    2:
+      - FibonacciLeaper
+      - LucasLeaper
+      - null
+      - PellLeaper
+      - TetranacciLeaper
+      - null
+      - null
+      - PentanacciLeaper
+      - PellLeaper
+      - null
+      - LucasLeaper
+      - TribonacciLeaper
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Math Chess 2
+  size: 12
+  castling: false
+  promote2:
+    - FibonacciLeaper2
+    - TribonacciLeaper2
+    - TetranacciLeaper2
+    - PentanacciLeaper2
+    - LucasLeaper2
+    - PellLeaper2
+    - PerrinLeaper2
+    - PythagorasLeaper2
+    - PrimeLeaper2
+    - Queen
+  asym: false
+  placers:
+    1:
+      - PythagorasLeaper2
+      - null
+      - PrimeLeaper2
+      - null
+      - PerrinLeaper2
+      - Queen
+      - King
+      - PerrinLeaper2
+      - null
+      - PrimeLeaper2
+      - null
+      - PythagorasLeaper2
+    2:
+      - FibonacciLeaper2
+      - LucasLeaper2
+      - null
+      - PellLeaper2
+      - TetranacciLeaper2
+      - null
+      - null
+      - PentanacciLeaper2
+      - PellLeaper2
+      - null
+      - LucasLeaper2
+      - TribonacciLeaper2
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]

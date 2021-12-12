@@ -1,0 +1,219 @@
+- name: Developing Chess
+  size: 10
+  castling: false
+  promote2:
+    - Queen
+    - Imitator
+    - DevelopingPrime
+    - NacciLeaper
+    - DevelopingMan
+  asym: false
+  placers:
+    1:
+      - Imitator
+      - DevelopingPrime
+      - NacciLeaper
+      - null
+      - Queen
+      - King
+      - null
+      - NacciLeaper
+      - DevelopingMan
+      - Imitator
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Developing Chess 2
+  size: 10
+  castling: false
+  promote2:
+    - Queen
+    - Imitator
+    - DevelopingPrime
+    - NacciLeaper2
+    - DevelopingMan2
+  asym: false
+  placers:
+    1:
+      - Imitator
+      - DevelopingPrime
+      - NacciLeaper2
+      - null
+      - Queen
+      - King
+      - null
+      - NacciLeaper2
+      - DevelopingMan2
+      - Imitator
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Reflecting Chess 1
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - ReflectingBishop1
+    - Rook
+    - ReflectingQueen1
+  asym: false
+  placers:
+    1:
+      - Rook
+      - Knight
+      - ReflectingBishop1
+      - ReflectingQueen1
+      - King
+      - ReflectingBishop1
+      - Knight
+      - Rook
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Reflecting Chess 2
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - ReflectingBishop2
+    - Rook
+    - ReflectingQueen2
+  asym: false
+  placers:
+    1:
+      - Rook
+      - Knight
+      - ReflectingBishop2
+      - ReflectingQueen2
+      - King
+      - ReflectingBishop2
+      - Knight
+      - Rook
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Reflecting Chess 3
+  size: 8
+  castling: true
+  promote2:
+    - Knight
+    - ReflectingBishop3
+    - Rook
+    - ReflectingQueen3
+  asym: false
+  placers:
+    1:
+      - Rook
+      - Knight
+      - ReflectingBishop3
+      - ReflectingQueen3
+      - King
+      - ReflectingBishop3
+      - Knight
+      - Rook
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Zoo
+  size: 10
+  castling: false
+  promote2:
+    - Lynx
+    - Hippopotamus
+    - Rhinoceros
+    - Giraffe
+    - Queen
+    - Horse
+    - Donkey
+    - Lion
+    - Tiger
+    - Deer
+  asym: false
+  placers:
+    1:
+      - Lynx
+      - Hippopotamus
+      - Rhinoceros
+      - Giraffe
+      - Queen
+      - King
+      - Giraffe
+      - Rhinoceros
+      - Hippopotamus
+      - Lynx
+    2:
+      - Horse
+      - Donkey
+      - Lion
+      - Tiger
+      - Deer
+      - Deer
+      - Tiger
+      - Lion
+      - Donkey
+      - Horse
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Imitators
+  size: 8
+  castling: false
+  promote2:
+    - Imitator
+    - Queen
+  asym: false
+  placers:
+    1: [Imitator, Imitator, Imitator, Queen, King, Imitator, Imitator, Imitator]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Archers
+  size: 10
+  castling: true
+  promote2:
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+    - HorseArcher
+  asym: false
+  placers:
+    1:
+      - Rook
+      - HorseArcher
+      - Knight
+      - Bishop
+      - Queen
+      - King
+      - Bishop
+      - Knight
+      - HorseArcher
+      - Rook
+    2: [Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Shower of Arrows
+  size: 10
+  castling: false
+  promote2:
+    - Queen
+    - HorseArcher
+  asym: false
+  placers:
+    1:
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - Queen
+      - King
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+    2: [Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer, Archer]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Pawns
+  size: 8
+  castling: false
+  promote2:
+    - Queen
+  asym: false
+  placers:
+    1: [Pawn, Pawn, Pawn, Queen, King, Pawn, Pawn, Pawn]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]

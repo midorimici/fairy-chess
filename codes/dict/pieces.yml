@@ -1,0 +1,104 @@
+A:
+  - Archer
+B:
+  - Baron
+  - Baroness
+  - Baronet
+  - Baronetess
+  - Bishop
+  - Blizzard
+  - Burggraf
+  - Burggräfin
+C:
+  - Count
+  - Countess
+D:
+  - Deer
+  - DevelopingMan
+  - DevelopingMan2
+  - DevelopingPrime
+  - Donkey
+  - Duchess
+  - Duke
+E:
+  - Esquire
+  - Esquiress
+F:
+  - FibonacciLeaper
+  - FibonacciLeaper2
+  - Friend
+G:
+  - Giraffe
+  - GrandDuchess
+  - GrandDuke
+  - Griffin
+H:
+  - Hippopotamus
+  - Horse
+  - HorseArcher
+I:
+  - Imitator
+J: []
+K:
+  - King
+  - Knight
+  - Knightess
+L:
+  - Landgraf
+  - Landgräfin
+  - LaserMachine
+  - Lion
+  - LucasLeaper
+  - LucasLeaper2
+  - Lynx
+M:
+  - Marchioness
+  - Markgraf
+  - Markgräfin
+  - Marquis
+  - Mist
+N:
+  - NacciLeaper
+  - NacciLeaper2
+O:
+  - Octagram
+  - Orphan
+P:
+  - Pawn
+  - PellLeaper
+  - PentanacciLeaper
+  - PentanacciLeaper2
+  - PerrinLeaper
+  - PerrinLeaper2
+  - Pfalzgraf
+  - Pfalzgräfin
+  - PrimeLeaper
+  - PrimeLeaper2
+  - PythagorasLeaper
+  - PythagorasLeaper2
+Q:
+  - Queen
+R:
+  - ReflectingBishop1
+  - ReflectingQueen1
+  - Rhinoceros
+  - Rook
+S: []
+T:
+  - Tank
+  - TetranacciLeaper
+  - TetranacciLeaper2
+  - Tiger
+  - TribonacciLeaper
+  - TribonacciLeaper2
+  - Tst
+U:
+  - Unicorn
+V:
+  - Viscount
+  - Viscountess
+W:
+  - Wave
+X: []
+Y: []
+Z: []

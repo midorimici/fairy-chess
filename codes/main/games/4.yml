@@ -1,0 +1,269 @@
+- name: Waves
+  size: 8
+  castling: false
+  promote2:
+    - Wave
+    - Horse
+    - Donkey
+    - Queen
+  asym: false
+  placers:
+    1: [Horse, Donkey, Wave, Queen, King, Wave, Donkey, Horse]
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Air Hockey
+  size: 12
+  castling: false
+  promote2:
+    - ReflectingBishop4
+    - ReflectingQueen4
+  asym: false
+  placers:
+    1:
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingQueen4
+      - King
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+      - ReflectingBishop4
+    2: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Arrows in Fog
+  size: 10
+  castling: false
+  promote2:
+    - Mist
+    - Queen
+    - HorseArcher
+  asym: false
+  placers:
+    1:
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - Queen
+      - King
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+    2:
+      - Archer
+      - Archer
+      - Archer
+      - Mist
+      - Archer
+      - Archer
+      - Mist
+      - Archer
+      - Archer
+      - Archer
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Arrows in Blizzard
+  size: 10
+  castling: false
+  promote2:
+    - Blizzard
+    - Queen
+    - HorseArcher
+  asym: false
+  placers:
+    1:
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - Queen
+      - King
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+      - HorseArcher
+    2:
+      - Archer
+      - Archer
+      - Archer
+      - Blizzard
+      - Archer
+      - Archer
+      - Blizzard
+      - Archer
+      - Archer
+      - Archer
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Foggy Nobles
+  size: 12
+  castling: false
+  promote2:
+    - Mist
+    - Baron
+    - Baroness
+    - Viscount
+    - Viscountess
+    - Count
+    - Countess
+    - Marquis
+    - Marchioness
+    - Duke
+    - Duchess
+    - GrandDuke
+    - GrandDuchess
+    - Queen
+  asym: false
+  placers:
+    1:
+      - GrandDuchess
+      - Duchess
+      - Marchioness
+      - null
+      - Pfalzgräfin
+      - Queen
+      - King
+      - Pfalzgraf
+      - null
+      - Marquis
+      - Duke
+      - GrandDuke
+    2:
+      - Burggräfin
+      - Countess
+      - Viscountess
+      - null
+      - Baroness
+      - Landgräfin
+      - Landgraf
+      - Baron
+      - null
+      - Viscount
+      - Count
+      - Burggraf
+    3:
+      - Markgräfin
+      - null
+      - Baronetess
+      - Mist
+      - Knightess
+      - Esquiress
+      - Esquire
+      - Knight
+      - Mist
+      - Baronet
+      - null
+      - Markgraf
+    4: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Chilly Nobles
+  size: 12
+  castling: false
+  promote2:
+    - Blizzard
+    - Baron
+    - Baroness
+    - Viscount
+    - Viscountess
+    - Count
+    - Countess
+    - Marquis
+    - Marchioness
+    - Duke
+    - Duchess
+    - GrandDuke
+    - GrandDuchess
+    - Queen
+  asym: false
+  placers:
+    1:
+      - GrandDuchess
+      - Duchess
+      - Marchioness
+      - null
+      - Pfalzgräfin
+      - Queen
+      - King
+      - Pfalzgraf
+      - null
+      - Marquis
+      - Duke
+      - GrandDuke
+    2:
+      - Burggräfin
+      - Countess
+      - Viscountess
+      - null
+      - Baroness
+      - Landgräfin
+      - Landgraf
+      - Baron
+      - null
+      - Viscount
+      - Count
+      - Burggraf
+    3:
+      - Markgräfin
+      - null
+      - Baronetess
+      - Blizzard
+      - Knightess
+      - Esquiress
+      - Esquire
+      - Knight
+      - Blizzard
+      - Baronet
+      - null
+      - Markgraf
+    4: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Orphans
+  size: 8
+  castling: true
+  promote2:
+    - Orphan
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    2: [Orphan, null, null, Orphan, Orphan, null, null, Orphan]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Friends
+  size: 8
+  castling: true
+  promote2:
+    - Friend
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    2: [null, Friend, null, Friend, Friend, null, Friend, null]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
+
+- name: Orphans & Friends
+  size: 8
+  castling: true
+  promote2:
+    - Orphan
+    - Friend
+    - Knight
+    - Bishop
+    - Rook
+    - Queen
+  asym: false
+  placers:
+    1: [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    2: [null, Friend, null, Orphan, Orphan, null, Friend, null]
+    3: [Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn, Pawn]
