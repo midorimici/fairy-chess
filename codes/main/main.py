@@ -304,7 +304,7 @@ class Game:
               gameboard_tmp[target] = target_tmp
             else:
               # 取り除いたらチェック解除できるなら、その駒を登録する
-              self.arrow_targets_should_removed += target
+              self.arrow_targets_should_removed.add(target)
           else:
             # 矢で取り除いてもチェック解除されないなら、
             # その動きでチェックを解除することはできない
