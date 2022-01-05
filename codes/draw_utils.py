@@ -139,8 +139,8 @@ def parse_mouse(mousepos: Tuple[int, int], board_size: int, is_black: bool = Fal
 
 def on_button(mouse_pos: 'tuple[int, int]', button_pos: 'tuple[int, int]', button_size: 'tuple[int, int]'):
   button_pos_np = np.asarray(resize(*button_pos))
-  return np.all((button_pos_np <= resize(*mouse_pos),
-                 resize(*mouse_pos) <= button_pos_np + resize(*button_size)))
+  return np.all((button_pos_np <= mouse_pos,
+                 mouse_pos <= button_pos_np + resize(*button_size)))
 
 
 # 基本図形
