@@ -35,13 +35,13 @@ def _draw_game_menu():
   # ページ切り替えボタン
   du.draw_triangle(screen, LIGHTGREEN, 'L', (360, 880))
   du.draw_triangle(screen, LIGHTGREEN, 'R', (600, 880))
-  screen.blit(FONT_EN_32.render('PREV', True, LIGHTGREEN), (260, 866))
-  screen.blit(FONT_EN_32.render('NEXT', True, LIGHTGREEN), (630, 866))
+  screen.blit(FONT_EN_32.render('PREV', True, LIGHTGREEN), du.resize(260, 866))
+  screen.blit(FONT_EN_32.render('NEXT', True, LIGHTGREEN), du.resize(630, 866))
   # 現在のページ数
   page_text = f'{_page}/{len(games) // 10 + 1}'
   screen.blit(
       FONT_EN_32.render(page_text, True, WHITE),
-      (480 - FONT_EN_32.size(page_text)[0] / 2, 866),
+      du.resize(480 - FONT_EN_32.size(page_text)[0] // 2, 866),
   )
 
 
