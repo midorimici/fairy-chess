@@ -1,5 +1,6 @@
 import pygame.display
 import pygame.draw
+from pygame.math import Vector2
 import pygame.rect
 import pygame.surface
 import pygame.time
@@ -35,13 +36,13 @@ def _draw_game_menu():
   # ページ切り替えボタン
   du.draw_triangle(screen, LIGHTGREEN, 'L', (360, 880))
   du.draw_triangle(screen, LIGHTGREEN, 'R', (600, 880))
-  screen.blit(FONT_EN_32.render('PREV', True, LIGHTGREEN), (260, 866))
-  screen.blit(FONT_EN_32.render('NEXT', True, LIGHTGREEN), (630, 866))
+  screen.blit(FONT_EN_32.render('PREV', True, LIGHTGREEN), du.resize(260, 866))
+  screen.blit(FONT_EN_32.render('NEXT', True, LIGHTGREEN), du.resize(630, 866))
   # 現在のページ数
   page_text = f'{_page}/{len(games) // 10 + 1}'
   screen.blit(
       FONT_EN_32.render(page_text, True, WHITE),
-      (480 - FONT_EN_32.size(page_text)[0] / 2, 866),
+      du.resize(480 - FONT_EN_32.size(page_text)[0] // 2, 866),
   )
 
 
@@ -54,9 +55,10 @@ def _draw_setting_menu():
   _foreseeing = game.foreseeing
   # ゲーム名を表示する
   _rendered_game_name = FONT_EN_24.render(game.kind['name'], True, IVORY)
+  _game_name_text_pos = Vector2(du.resize(480, 60)) - Vector2(_rendered_game_name.get_width() // 2, 0)
   screen.blit(
       _rendered_game_name,
-      du.resize(480 - _rendered_game_name.get_width() // 2, 60),
+      _game_name_text_pos[:],
   )
   # 色選択
   screen.blit(
@@ -190,9 +192,10 @@ def _draw_castling_confirmation():
   _draw_balloon(480, 240, _end)
   # テキスト
   rendered_text = FONT_JA_32.render('キャスリング？', True, WISTARIA)
+  text_pos = Vector2(du.resize(480, 420)) - Vector2(rendered_text.get_width() // 2, 0)
   screen.blit(
       rendered_text,
-      du.resize(480 - rendered_text.get_width() // 2, 420),
+      text_pos[:],
   )
   # ボタン
   du.draw_button(screen, 'Yes', du.resize(360, 480), du.resize(90, 60), color=WISTARIA, bgcolor=PURPLE)
@@ -212,22 +215,22 @@ def _draw_piece_value():
   text_width = white_text_surf.get_width()
   screen.blit(
       white_text_surf,
-      du.resize(480 - 2 * text_width, 430),
+      (Vector2(du.resize(480, 430)) - Vector2(2 * text_width, 0))[:],
   )
   screen.blit(
       FONT_EN_32.render('BLACK', True, WISTARIA),
-      du.resize(480 + text_width, 430),
+      (Vector2(du.resize(480, 430)) + Vector2(text_width, 0))[:],
   )
   # 価値
   w_val_text_surf = FONT_EN_32.render(str(w_val), True, WISTARIA)
   screen.blit(
       w_val_text_surf,
-      (480 - 2 * text_width + (text_width - w_val_text_surf.get_width()), 500),
+      (Vector2(du.resize(480, 500)) - Vector2(2 * text_width + (text_width - w_val_text_surf.get_width()), 0))[:],
   )
   b_val_text_surf = FONT_EN_32.render(str(b_val), True, WISTARIA)
   screen.blit(
       b_val_text_surf,
-      (480 + text_width + (text_width - b_val_text_surf.get_width()), 500),
+      (Vector2(du.resize(480, 500)) + Vector2(text_width + (text_width - b_val_text_surf.get_width()), 0))[:],
   )
 
 
@@ -260,9 +263,10 @@ def _draw_alert():
   pygame.draw.rect(screen, PURPLE, rect, border_radius=16)
   # テキスト
   rendered_text = FONT_JA_32.render('ゲームを中断してホーム画面に戻りますか？', True, WISTARIA)
+  text_pos = Vector2(du.resize(480, 420)) - Vector2(rendered_text.get_width() // 2, 0)
   screen.blit(
       rendered_text,
-      du.resize(480 - rendered_text.get_width() // 2, 420),
+      text_pos[:],
   )
   # ボタン
   du.draw_button(screen, 'Yes', du.resize(360, 480), du.resize(90, 60), color=WISTARIA, bgcolor=PURPLE)

@@ -23,12 +23,15 @@ pygame.init()
 
 # フォント
 cica_path = os.path.normpath(f'{os.path.dirname(__file__)}/../assets/Cica-FChess.ttf')
-FONT_JA_16 = pygame.font.Font(cica_path, 16)
-FONT_JA_24 = pygame.font.Font(cica_path, 24)
-FONT_JA_32 = pygame.font.Font(cica_path, 32)
-FONT_EN_16 = pygame.font.SysFont('consolas', 16)
-FONT_EN_24 = pygame.font.SysFont('consolas', 24)
-FONT_EN_32 = pygame.font.SysFont('consolas', 32)
+_16 = int(16 * WSIZE / 960)
+_24 = int(24 * WSIZE / 960)
+_32 = int(32 * WSIZE / 960)
+FONT_JA_16 = pygame.font.Font(cica_path, _16)
+FONT_JA_24 = pygame.font.Font(cica_path, _24)
+FONT_JA_32 = pygame.font.Font(cica_path, _32)
+FONT_EN_16 = pygame.font.SysFont('consolas', _16)
+FONT_EN_24 = pygame.font.SysFont('consolas', _24)
+FONT_EN_32 = pygame.font.SysFont('consolas', _32)
 
 # 色
 AMBER = (209, 140, 71)
