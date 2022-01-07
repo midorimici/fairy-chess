@@ -62,6 +62,28 @@ def _draw_down_button():
   pygame.draw.polygon(screen, ORANGE, (du.resize(180, 930), du.resize(150, 910), du.resize(210, 910)))
 
 
+def _draw_piece_names(initial: str, num: int, top: int, active_piece: Optional[Type[Piece]]):
+  '''
+  駒リストにおける駒の名前を描画する
+
+  initial : str > 'A'-'Z'
+    頭文字
+  num: int
+    その頭文字をもつ駒の数
+  top : int
+    上からどれだけスクロールしているか
+  active_piece : Optional[Type[Piece]]
+    選択中の駒
+  '''
+  stop = top + 10 if num > top + 10 else num
+  for i in range(top, stop):
+    font_color = IVORY
+    piece_name = pieces[initial][i].__name__
+    if active_piece == pieces[initial][i]:
+      font_color = LIGHTGREEN
+    screen.blit(FONT_EN_24.render(piece_name, True, font_color), du.resize(90, 40 + 80 * (i + 1 - top)))
+
+
 def _draw_list(initial: str, top: int, active_piece: Optional[Type[Piece]]):
   '''
   駒リストを描画する
@@ -80,13 +102,7 @@ def _draw_list(initial: str, top: int, active_piece: Optional[Type[Piece]]):
   # 頭文字の描画
   screen.blit(FONT_EN_32.render(initial, True, IVORY), du.resize(90, 30))
   # 駒の名前の描画
-  stop = top + 10 if num > top + 10 else num
-  for i in range(top, stop):
-    font_color = IVORY
-    piece_name = pieces[initial][i].__name__
-    if active_piece == pieces[initial][i]:
-      font_color = LIGHTGREEN
-    screen.blit(FONT_EN_24.render(piece_name, True, font_color), du.resize(90, 40 + 80 * (i + 1 - top)))
+  _draw_piece_names(initial, num, top, active_piece)
   # 下ボタンの描画
   if num > top + 10:
     _draw_down_button()
