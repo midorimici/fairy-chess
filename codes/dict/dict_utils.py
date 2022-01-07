@@ -5,6 +5,7 @@ dict用
 
 
 import pygame.draw
+from pygame.math import Vector2
 import pygame.surface
 import pygame.transform
 from typing import Tuple, Type, Optional
@@ -77,7 +78,7 @@ def _draw_list(initial: str, top: int, active_piece: Optional[Type[Piece]]):
   # 水平線の描画
   _draw_horizontal_lines()
   # 頭文字の描画
-  screen.blit(FONT_EN_32.render(initial, True, IVORY), (90, 30))
+  screen.blit(FONT_EN_32.render(initial, True, IVORY), du.resize(90, 30))
   # 駒の名前の描画
   stop = top + 10 if num > top + 10 else num
   for i in range(top, stop):
@@ -85,7 +86,7 @@ def _draw_list(initial: str, top: int, active_piece: Optional[Type[Piece]]):
     piece_name = pieces[initial][i].__name__
     if active_piece == pieces[initial][i]:
       font_color = LIGHTGREEN
-    screen.blit(FONT_EN_24.render(piece_name, True, font_color), (90, 40 + 80 * (i + 1 - top)))
+    screen.blit(FONT_EN_24.render(piece_name, True, font_color), du.resize(90, 40 + 80 * (i + 1 - top)))
   # 下ボタンの描画
   if num > top + 10:
     _draw_down_button()
@@ -101,7 +102,8 @@ def _draw_try_button(img: pygame.surface.Surface):
   img : Surface
     ボタンの ▶ を乗せる駒画像
   '''
-  du.draw_triangle(img, ORANGE, 'R', (img.get_width() - 20, img.get_height() - 30))
+  pos = Vector2(img.get_width() - 20, img.get_height() - 30) * 960 / WSIZE
+  du.draw_triangle(img, ORANGE, 'R', tuple(pos[:]))
 
 
 def _draw_desc_image(active_piece: Type[Piece]):
