@@ -5,6 +5,7 @@ dict用
 
 
 import pygame.draw
+from pygame.math import Vector2
 import pygame.surface
 import pygame.transform
 from typing import Tuple, Type, Optional
@@ -101,7 +102,8 @@ def _draw_try_button(img: pygame.surface.Surface):
   img : Surface
     ボタンの ▶ を乗せる駒画像
   '''
-  du.draw_triangle(img, ORANGE, 'R', (img.get_width() - 20, img.get_height() - 30))
+  pos = Vector2(img.get_width() - 20, img.get_height() - 30) * 960 / WSIZE
+  du.draw_triangle(img, ORANGE, 'R', tuple(pos[:]))
 
 
 def _draw_desc_image(active_piece: Type[Piece]):
