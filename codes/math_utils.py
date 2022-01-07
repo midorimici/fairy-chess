@@ -117,10 +117,10 @@ def _perrin(n: int):
     return b
   elif n == 3:
     return c
-  else:
-    for _ in range(n - 3):
-      a, b, c = b, c, a + b
-    return c
+
+  for _ in range(n - 3):
+    a, b, c = b, c, a + b
+  return c
 
 
 # 42までの素数リスト
