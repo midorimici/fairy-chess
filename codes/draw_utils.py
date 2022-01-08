@@ -341,22 +341,20 @@ def draw_squares(
         draw_square(screen, size, (i, j), IVORY)
   # 開始位置のマスの色を変える．
   if startpos is not None:
-    surf = pygame.surface.Surface((WSIZE, WSIZE))
-    surf.set_colorkey(BLACK)
-    surf.set_alpha(120)
-    if is_black:
-      startpos = (size - 1 - startpos[0], size - 1 - startpos[1])
-    draw_square(surf, size, startpos, LIGHTGREEN)
-    screen.blit(surf, (0, 0))
+    _draw_transparent_square(screen, startpos, size, is_black)
   # 選択中の位置のマスの色を変える
   if selected is not None:
-    surf = pygame.surface.Surface((WSIZE, WSIZE))
-    surf.set_colorkey(BLACK)
-    surf.set_alpha(120)
-    if is_black:
-      selected = (size - 1 - selected[0], size - 1 - selected[1])
-    draw_square(surf, size, selected, LIGHTGREEN)
-    screen.blit(surf, (0, 0))
+    _draw_transparent_square(screen, selected, size, is_black)
+
+
+def _draw_transparent_square(screen: pygame.surface.Surface, pos: Position, size: int, is_black: bool):
+  surf = pygame.surface.Surface((WSIZE, WSIZE))
+  surf.set_colorkey(BLACK)
+  surf.set_alpha(120)
+  if is_black:
+    pos = (size - 1 - pos[0], size - 1 - pos[1])
+  draw_square(surf, size, pos, LIGHTGREEN)
+  screen.blit(surf, (0, 0))
 
 
 def draw_file(screen: pygame.surface.Surface, size: int = 8, is_black: bool = False):
