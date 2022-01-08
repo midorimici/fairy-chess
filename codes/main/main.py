@@ -145,70 +145,94 @@ class Game:
     '''駒を盤面に配置する'''
     assert self.kind is not None
     if self.kind['asym']:
-      placers = cast(AsymPlacers, self.kind['placers'])
-      for fl in range(self.kind['size']):
-        for rk in placers:
-          # None を指定すれば駒が置かれることはなく次のマスへ進む
-          _ = placers[rk][fl]
-          if _ is not None:
-            self.gameboard[(fl, rk - 1)] = _[0](_[1])
+      self._place_pieces_asym()
     else:
-      placers = cast(Placers, self.kind['placers'])
-      for fl in range(self.kind['size']):
-        for rk in placers:
-          piece = placers[rk][fl]
-          # None を指定すれば駒が置かれることはなく次のマスへ進む
-          if piece is not None:
-            # 白の駒
-            self.gameboard[(fl, rk - 1)] = piece('W')
-            # 黒の駒
-            self.gameboard[(fl, self.kind['size'] - rk)] = piece('B')
+      self._place_pieces_sym()
+
+  def _place_pieces_asym(self):
+    '''非対称な盤面に駒を配置する'''
+    assert self.kind is not None
+    placers = cast(AsymPlacers, self.kind['placers'])
+    for fl in range(self.kind['size']):
+      for rk in placers:
+        # None を指定すれば駒が置かれることはなく次のマスへ進む
+        _ = placers[rk][fl]
+        if _ is not None:
+          self.gameboard[(fl, rk - 1)] = _[0](_[1])
+
+  def _place_pieces_sym(self):
+    '''対称な盤面に駒を配置する'''
+    assert self.kind is not None
+    placers = cast(Placers, self.kind['placers'])
+    for fl in range(self.kind['size']):
+      for rk in placers:
+        piece = placers[rk][fl]
+        # None を指定すれば駒が置かれることはなく次のマスへ進む
+        if piece is not None:
+          # 白の駒
+          self.gameboard[(fl, rk - 1)] = piece('W')
+          # 黒の駒
+          self.gameboard[(fl, self.kind['size'] - rk)] = piece('B')
 
   def main(self):
     '''盤面の状態の変更'''
     startpos, endpos = self.startpos, self.endpos
     # 開始位置・終了位置がともに指定されている
-    if startpos is not None and endpos is not None:
-      # 動かす駒を取得
-      target = self.gameboard.get(startpos)
+    if startpos is None or endpos is None:
+      return
 
-      # 開始位置に駒が存在し，その色が自分の駒色である
-      if target and target.color == self.playersturn:
-        assert self.kind is not None
-        # 駒を動かした回数によって動きが変わる駒が動いた
-        if hasattr(target, 'count'):
-          target.count += 1
-        # ポーンが2歩進んだ
-        if (target.abbr == 'P'
-                and endpos[1] == startpos[1] + (2 if target.color == 'W' else -2)):
-          self.advanced2_pos = endpos
-        else:
-          self.advanced2_pos = None
-        # --キャスリング
-        if self.kind['castling']:
-          self.can_castling_tmp = deepcopy(self.can_castling)
-          # -キングが動いた
-          if target.name == 'WK':
-            self.can_castling['W'] = [False, False]
-          if target.name == 'BK':
-            self.can_castling['B'] = [False, False]
-          # -ルークが動いた
-          assert self.rook_init_pos is not None
-          if target.name == 'WR':
-            if startpos[0] == self.rook_init_pos[0]:
-              self.can_castling['W'][0] = False
-            if startpos[0] == self.rook_init_pos[1]:
-              self.can_castling['W'][1] = False
-          if target.name == 'BR':
-            if startpos[0] == self.rook_init_pos[0]:
-              self.can_castling['B'][0] = False
-            if startpos[0] == self.rook_init_pos[1]:
-              self.can_castling['B'][1] = False
-        # 通常の動き
-        self.renew_gameboard(
-            startpos, endpos, self.gameboard, target.color)
-        self.promotion(target, endpos)
-        self.process_after_renewing_board()
+    # 動かす駒を取得
+    target = self.gameboard.get(startpos)
+
+    # 開始位置に駒が存在し，その色が自分の駒色である
+    if target is None or target.color != self.playersturn:
+      return
+
+    # 駒を動かした回数によって動きが変わる駒が動いた
+    if hasattr(target, 'count'):
+      target.count += 1
+    # ポーンが2歩進んだ
+    self._update_advanced2_pos(target, startpos, endpos)
+    # キャスリング
+    self._update_castling_potentials(target.name, startpos[0])
+    # 通常の動き
+    self.renew_gameboard(
+        startpos, endpos, self.gameboard, target.color)
+    self.promotion(target, endpos)
+    self.process_after_renewing_board()
+
+  def _update_advanced2_pos(self, target: pieces.Piece, startpos: Position, endpos: Position):
+    '''`advanced2_pos` を更新する'''
+    if (target.abbr == 'P'
+            and endpos[1] == startpos[1] + (2 if target.color == 'W' else -2)):
+      self.advanced2_pos = endpos
+    else:
+      self.advanced2_pos = None
+
+  def _update_castling_potentials(self, name: str, x: int):
+    '''キャスリング可能性を更新する'''
+    assert self.kind is not None
+    if not self.kind['castling']:
+      return
+
+    self.can_castling_tmp = deepcopy(self.can_castling)
+    # キングが動いた
+    if name == 'WK':
+      self.can_castling['W'] = [False, False]
+    if name == 'BK':
+      self.can_castling['B'] = [False, False]
+    # ルークが動いた
+    assert self.rook_init_pos is not None
+    if name == 'WR':
+      if x == self.rook_init_pos[0]:
+        self.can_castling['W'][0] = False
+      if x == self.rook_init_pos[1]:
+        self.can_castling['W'][1] = False
+    if name == 'BR':
+      if x == self.rook_init_pos[0]:
+        self.can_castling['B'][0] = False
+      if x == self.rook_init_pos[1]:
+        self.can_castling['B'][1] = False
 
   def valid_moves(
       self, piece: pieces.Piece, startpos: Position, gameboard: 'Optional[Board]' = None,
@@ -250,31 +274,57 @@ class Game:
       result = piece.available_moves(*startpos, _board, size=_size)
       # アンパッサン
       self.en_passant = False
-      if piece.abbr == 'P':
-        for endpos in ((x, y - (1 if piece.color == 'W' else -1))
-                       for x, y in utils.pawn_init_pos(
-                self.kind['placers'], _size,
-                self.kind['asym'])[opponent[piece.color]]):
-          if self.en_passant_requirements(piece, startpos, endpos):
-            self.en_passant = True
-            result.add(endpos)
+      result = self._add_en_passant_moves(result, piece, startpos, _size)
       # キャスリング
-      if self.kind['castling']:
-        for endpos in [(2, 0), (_size - 2, 0), (2, _size - 1),
-                       (_size - 2, _size - 1)]:
-          if self.castling_requirements(piece, endpos, 0, self.gameboard, self.can_castling):
-            result.add(endpos)
-          if self.castling_requirements(piece, endpos, 1, self.gameboard, self.can_castling):
-            result.add(endpos)
+      result = self._add_castling_moves(result, piece, _size)
     # 盤面の中に収まらなければならない
     result = {pos for pos in result
               if pu.is_in_bounds(*pos, _size)}
     # チェック回避のため動き縛り
-    result_tmp = copy(result)
+    result = self._remove_invalid_moves(result, piece, _board, startpos)
+
+    piece.moves = sorted(result)
+    piece.recalc = False
+    return piece.moves
+
+  def _add_en_passant_moves(
+      self, moves: PositionSet, piece: pieces.Piece, startpos: Position, size: int
+  ) -> PositionSet:
+    '''アンパッサンの動きを加えた動きを返す'''
+    assert self.kind is not None
+    result = copy(moves)
+    if piece.abbr == 'P':
+      for endpos in ((x, y - (1 if piece.color == 'W' else -1))
+                     for x, y in utils.pawn_init_pos(
+              self.kind['placers'], size,
+              self.kind['asym'])[opponent[piece.color]]):
+        if self.en_passant_requirements(piece, startpos, endpos):
+          self.en_passant = True
+          result.add(endpos)
+    return result
+
+  def _add_castling_moves(self, moves: PositionSet, piece: pieces.Piece, size: int) -> PositionSet:
+    '''キャスリングの動きを加えた動きを返す'''
+    assert self.kind is not None
+    result = copy(moves)
+    if self.kind['castling']:
+      for endpos in [(2, 0), (size - 2, 0), (2, size - 1),
+                     (size - 2, size - 1)]:
+        if self.castling_requirements(piece, endpos, 0, self.gameboard, self.can_castling):
+          result.add(endpos)
+        if self.castling_requirements(piece, endpos, 1, self.gameboard, self.can_castling):
+          result.add(endpos)
+    return result
+
+  def _remove_invalid_moves(
+      self, moves: PositionSet, piece: pieces.Piece, board: Board, startpos: Position
+  ) -> PositionSet:
+    '''自分がチェックされた状態になってしまう動きを除外した動きを返す'''
+    result = copy(moves)
     if hasattr(piece, 'archer_dir'):
       # 動かす駒がアーチャーのとき
-      for endpos in result_tmp:
-        gameboard_tmp = copy(_board)
+      for endpos in moves:
+        gameboard_tmp = copy(board)
         self.renew_gameboard(
             startpos, endpos, gameboard_tmp, piece.color)
         # 動いた
@@ -310,17 +360,15 @@ class Game:
             # その動きでチェックを解除することはできない
             result.remove(endpos)
     else:
-      for endpos in result_tmp:
-        gameboard_tmp = deepcopy(_board)
+      for endpos in moves:
+        gameboard_tmp = deepcopy(board)
         self.renew_gameboard(
             startpos, endpos, gameboard_tmp, piece.color)
         self.refresh_memo(gameboard_tmp)
         if self.is_check(piece.color, gameboard_tmp):
           result.remove(endpos)
 
-    piece.moves = sorted(result)
-    piece.recalc = False
-    return piece.moves
+    return result
 
   def en_passant_requirements(self, piece: pieces.Piece, startpos: Position, endpos: Position):
     '''
@@ -576,19 +624,23 @@ class Game:
     : bool
     '''
     # 相手の番である
-    if self.playersturn == color:
-      for position, piece in self.gameboard.items():
-        if color == piece.color:
-          for dest in self.valid_moves(piece, position):
-            gameboard_tmp = copy(self.gameboard)
-            self.renew_gameboard(
-                position, dest, gameboard_tmp, color)
-            # 自分の駒のどれかをなんらかの形で動かしてチェックされている状態を解除できるなら False
-            if not self.is_check(color, gameboard_tmp):
-              return False
-      # どうあがいてもチェックされた状態を解除できないなら True
-      return True
-    return False
+    if self.playersturn != color:
+      return False
+
+    for position, piece in self.gameboard.items():
+      if color != piece.color:
+        continue
+
+      # 自分の駒を動かしてみる
+      for dest in self.valid_moves(piece, position):
+        gameboard_tmp = copy(self.gameboard)
+        self.renew_gameboard(
+            position, dest, gameboard_tmp, color)
+        # 自分の駒のどれかをなんらかの形で動かしてチェックされている状態を解除できるなら False
+        if not self.is_check(color, gameboard_tmp):
+          return False
+    # どうあがいてもチェックされた状態を解除できないなら True
+    return True
 
   def is_stalemate(self, color: Color):
     '''
@@ -630,67 +682,84 @@ class Game:
     if startpos != endpos:
       del gameboard[startpos]
     # アンパッサン
-    if self.en_passant:
-      try:
-        advanced2_pos = self.advanced2_record.get(self.count, (None, None))
-        # 2歩進んだ人のx位置が、アンパッサン後のアンパッサンしたポーンのx位置に等しい
-        if advanced2_pos[0] == endpos[0]:
-          assert advanced2_pos[1] is not None
-          if color == 'W':
-            if (advanced2_pos[1] + 2 == endpos[1] + 1):
-              del gameboard[(endpos[0], endpos[1] - 1)]
-          if color == 'B':
-            if (advanced2_pos[1] - 2 == endpos[1] - 1):
-              del gameboard[(endpos[0], endpos[1] + 1)]
-      except KeyError:
-        pass
+    self._handle_en_passant(endpos, gameboard, color)
     # キャスリング
+    self._handle_castling(endpos, gameboard)
+
+  def _handle_en_passant(self, endpos: Position, gameboard: Board, color: Color):
+    '''アンパッサンによる盤面更新を行う'''
+    if not self.en_passant:
+      return
+
+    try:
+      advanced2_pos = self.advanced2_record.get(self.count, (None, None))
+      # 2歩進んだ人のx位置が、アンパッサン後のアンパッサンしたポーンのx位置に等しい
+      if advanced2_pos[0] != endpos[0]:
+        return
+
+      assert advanced2_pos[1] is not None
+      if (color == 'W'
+              and advanced2_pos[1] + 2 == endpos[1] + 1):
+        del gameboard[(endpos[0], endpos[1] - 1)]
+      elif (color == 'B'
+            and advanced2_pos[1] - 2 == endpos[1] - 1):
+        del gameboard[(endpos[0], endpos[1] + 1)]
+    except KeyError:
+      pass
+
+  def _handle_castling(self, endpos: Position, gameboard: Board):
+    '''キャスリングによる盤面更新を行う'''
+    assert self.kind is not None
     # キャスリングできるゲームである
-    if self.kind['castling']:
-      # キャスリング確認でキャスリングすることを選択した
-      # 終了位置指定がある
-      if self.do_castling and self.endpos is not None:
-        assert self.rook_init_pos is not None
-        _size = self.kind['size']
-        # クイーンサイド
-        if self.castling_requirements(gameboard[endpos], endpos, 0, self.record[self.count], self.can_castling_tmp):
-          rook_pos = self.rook_init_pos[0]
-          # 白
-          if (self.endpos == (2, 0)
-                  and self.gameboard[self.endpos].color == 'W'
-                  and (rook_pos, 0) in self.gameboard):
-            if self.gameboard[(rook_pos, 0)].abbr == 'R':
-              del self.gameboard[(rook_pos, 0)]
-            self.gameboard[(3, 0)] = pieces.Rook('W')
-            self.finish_castling['W'] = self.count
-          # 黒
-          if (self.endpos == (2, _size - 1)
-                  and self.gameboard[self.endpos].color == 'B'
-                  and (rook_pos, _size - 1) in self.gameboard):
-            if self.gameboard[(rook_pos, _size - 1)].abbr == 'R':
-              del self.gameboard[(rook_pos, _size - 1)]
-            self.gameboard[(3, _size - 1)] = pieces.Rook('B')
-            self.finish_castling['B'] = self.count
-        # キングサイド
-        if self.castling_requirements(gameboard[endpos], endpos, 1, self.record[self.count], self.can_castling_tmp):
-          rook_pos = self.rook_init_pos[1]
-          # 白
-          if (self.endpos == (_size - 2, 0)
-                  and self.gameboard[self.endpos].color == 'W'
-                  and (rook_pos, 0) in self.gameboard):
-            if self.gameboard[(rook_pos, 0)].abbr == 'R':
-              del self.gameboard[(rook_pos, 0)]
-            self.gameboard[(_size - 3, 0)] = pieces.Rook('W')
-            self.finish_castling['W'] = self.count
-          # 黒
-          if (self.endpos == (_size - 2, _size - 1)
-                  and self.gameboard[self.endpos].color == 'B'
-                  and (rook_pos, _size - 1) in self.gameboard):
-            if self.gameboard[(rook_pos, _size - 1)].abbr == 'R':
-              del self.gameboard[(rook_pos, _size - 1)]
-            self.gameboard[(_size - 3,
-                            _size - 1)] = pieces.Rook('B')
-            self.finish_castling['B'] = self.count
+    if not self.kind['castling']:
+      return
+
+    # キャスリング確認でキャスリングすることを選択した
+    # 終了位置指定がある
+    if not self.do_castling or self.endpos is None:
+      return
+
+    assert self.rook_init_pos is not None
+    _size = self.kind['size']
+    # クイーンサイド
+    if self.castling_requirements(gameboard[endpos], endpos, 0, self.record[self.count], self.can_castling_tmp):
+      rook_pos = self.rook_init_pos[0]
+      # 白
+      if (self.endpos == (2, 0)
+              and self.gameboard[self.endpos].color == 'W'
+              and (rook_pos, 0) in self.gameboard):
+        if self.gameboard[(rook_pos, 0)].abbr == 'R':
+          del self.gameboard[(rook_pos, 0)]
+        self.gameboard[(3, 0)] = pieces.Rook('W')
+        self.finish_castling['W'] = self.count
+      # 黒
+      if (self.endpos == (2, _size - 1)
+              and self.gameboard[self.endpos].color == 'B'
+              and (rook_pos, _size - 1) in self.gameboard):
+        if self.gameboard[(rook_pos, _size - 1)].abbr == 'R':
+          del self.gameboard[(rook_pos, _size - 1)]
+        self.gameboard[(3, _size - 1)] = pieces.Rook('B')
+        self.finish_castling['B'] = self.count
+    # キングサイド
+    if self.castling_requirements(gameboard[endpos], endpos, 1, self.record[self.count], self.can_castling_tmp):
+      rook_pos = self.rook_init_pos[1]
+      # 白
+      if (self.endpos == (_size - 2, 0)
+              and self.gameboard[self.endpos].color == 'W'
+              and (rook_pos, 0) in self.gameboard):
+        if self.gameboard[(rook_pos, 0)].abbr == 'R':
+          del self.gameboard[(rook_pos, 0)]
+        self.gameboard[(_size - 3, 0)] = pieces.Rook('W')
+        self.finish_castling['W'] = self.count
+      # 黒
+      if (self.endpos == (_size - 2, _size - 1)
+              and self.gameboard[self.endpos].color == 'B'
+              and (rook_pos, _size - 1) in self.gameboard):
+        if self.gameboard[(rook_pos, _size - 1)].abbr == 'R':
+          del self.gameboard[(rook_pos, _size - 1)]
+        self.gameboard[(_size - 3,
+                        _size - 1)] = pieces.Rook('B')
+        self.finish_castling['B'] = self.count
 
   def refresh_memo(self, board: 'Optional[Board]' = None):
     # 駒の動きのメモを初期化
