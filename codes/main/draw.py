@@ -49,10 +49,6 @@ def _draw_game_menu():
 def _draw_setting_menu():
   '''設定画面を描画する'''
   assert game.kind is not None
-  _color = game.my_color
-  _mode = game.mode
-  _level = game.level
-  _foreseeing = game.foreseeing
   # ゲーム名を表示する
   _rendered_game_name = FONT_EN_24.render(game.kind['name'], True, IVORY)
   _game_name_text_pos = Vector2(du.resize(480, 60)) - Vector2(_rendered_game_name.get_width() // 2, 0)
@@ -61,6 +57,24 @@ def _draw_setting_menu():
       _game_name_text_pos[:],
   )
   # 色選択
+  _draw_color_buttons()
+
+  # モード選択
+  _draw_mode_buttons()
+
+  # コンピュータ設定
+  _draw_computer_settings()
+
+  # もどる
+  du.draw_button(screen, '←もどる', du.resize(30, 30), du.resize(210, 90), font=FONT_JA_32)
+
+  # 決定
+  du.draw_button(screen, 'PLAY!', du.resize(720, 30), du.resize(210, 90), color=BROWN, bgcolor=ORANGE)
+
+
+def _draw_color_buttons():
+  '''色選択の部分を描画する'''
+  _color = game.my_color
   screen.blit(
       FONT_JA_32.render('あなたの駒の色を選んでね', True, IVORY),
       du.resize(120, 180),
@@ -76,7 +90,10 @@ def _draw_setting_menu():
     du.draw_button(screen, '✓Black  ',
                    du.resize(540, 270), du.resize(300, 120), color=WHITE, bgcolor=BLACK, font=FONT_JA_32)
 
-  # モード選択
+
+def _draw_mode_buttons():
+  '''モード選択の部分を描画する'''
+  _mode = game.mode
   screen.blit(
       FONT_JA_32.render('人と対戦かコンピュータ対戦か選んでね', True, IVORY),
       du.resize(120, 480),
@@ -92,35 +109,36 @@ def _draw_setting_menu():
     du.draw_button(screen, '✓コンピュータと対戦 ',
                    du.resize(540, 570), du.resize(300, 120), bgcolor=PURPLE, font=FONT_JA_24)
 
-  if _level:
-    # レベル選択
+
+def _draw_computer_settings():
+  '''コンピュータのレベルや先読みの有無を設定する部分を描画する'''
+  _level = game.level
+  _foreseeing = game.foreseeing
+  if _level == 0:
+    return
+
+  # レベル選択
+  screen.blit(
+      FONT_JA_32.render('レベル', True, IVORY),
+      du.resize(120, 750),
+  )
+  for i in range(1, 6):
+    if _level == i:
+      _text = f'✓{i}'
+    else:
+      _text = f'  {i}'
     screen.blit(
-        FONT_JA_32.render('レベル', True, IVORY),
-        du.resize(120, 750),
+        FONT_JA_32.render(_text, True, IVORY),
+        du.resize(180 + 120 * i, 750),
     )
-    for i in range(1, 6):
-      if _level == i:
-        _text = f'✓{i}'
-      else:
-        _text = f'  {i}'
-      screen.blit(
-          FONT_JA_32.render(_text, True, IVORY),
-          du.resize(180 + 120 * i, 750),
-      )
 
-    # 先読みの有無
-    screen.blit(
-        FONT_JA_32.render('先読み', True, IVORY),
-        du.resize(120, 840),
-    )
-    du.draw_button(screen, '✓' if _foreseeing else '  ',
-                   du.resize(300, 840), du.resize(40, 40), color=BROWN, font=FONT_JA_32)
-
-  # もどる
-  du.draw_button(screen, '←もどる', du.resize(30, 30), du.resize(210, 90), font=FONT_JA_32)
-
-  # 決定
-  du.draw_button(screen, 'PLAY!', du.resize(720, 30), du.resize(210, 90), color=BROWN, bgcolor=ORANGE)
+  # 先読みの有無
+  screen.blit(
+      FONT_JA_32.render('先読み', True, IVORY),
+      du.resize(120, 840),
+  )
+  du.draw_button(screen, '✓' if _foreseeing else '  ',
+                 du.resize(300, 840), du.resize(40, 40), color=BROWN, font=FONT_JA_32)
 
 
 def _draw_balloon(width: int, height: int, point: 'tuple[int, int]'):
@@ -285,15 +303,19 @@ def _draw_piece_move_anim():
   )
   pygame.time.delay(20)
   game.time += 1
-  if game.time >= 10:
-    game.moving = False
-    game.startpos = None
-    if game.arrow_targets == set() and not game.prom:
-      game.endpos = None
-      game.time = 0
-      game.msg_anim = True
-      if game.mode == 'PvsC':
-        game.computer_moving = True
+  if game.time < 10:
+    return
+
+  game.moving = False
+  game.startpos = None
+  if game.arrow_targets != set() or game.prom:
+    return
+
+  game.endpos = None
+  game.time = 0
+  game.msg_anim = True
+  if game.mode == 'PvsC':
+    game.computer_moving = True
 
 
 def _shooting_anim():
@@ -403,6 +425,53 @@ def _draw_animations():
     play(move_snd)
 
 
+def _draw_game():
+  assert game.kind is not None
+  _size = game.kind['size']
+  _board = game.gameboard
+  _start = game.startpos
+  _end = game.endpos
+  _arw_targets = game.arrow_targets
+
+  du.draw_board(screen, _start, _size, _board,
+                hide=_end if game.moving or _arw_targets == set() else None,
+                selected=game.selecting_square,
+                is_black=game.my_color == 'B')
+
+  # 可能な移動先の表示
+  if _start is not None and _end is None:
+    _piece = _board[_start]
+    du.draw_available_moves(
+        screen, _size, set(game.valid_moves(_piece, _start)),
+        change_color_condition=game.playersturn != _piece.color,
+        is_black=game.my_color == 'B',
+    )
+  # アーチャーの矢の攻撃対象の表示
+  if _arw_targets:
+    du.draw_arrow_target(screen, _size, game.arrow_targets, game.my_color == 'B')
+
+  # プロモーション
+  if game.prom:
+    _draw_promotion_balloon()
+  # キャスリングするかどうかの確認
+  if game.confirm_castling:
+    _draw_castling_confirmation()
+
+  # 駒の価値の表示
+  if game.show_value:
+    _draw_piece_value()
+  # ヘルプの表示
+  if game.show_user_guide:
+    _draw_user_guide()
+  # ゲーム選択メニューに戻るかの確認
+  if game.alert:
+    _draw_alert()
+
+  _draw_animations()
+
+  du.draw_cmd(screen, game.cmd_repeat_num, game.dest_cmd)
+
+
 def draw():
   '''描画コールバック'''
   screen.fill(BROWN)
@@ -412,49 +481,6 @@ def draw():
   elif game.select_color:
     _draw_setting_menu()
   else:
-    assert game.kind is not None
-    _size = game.kind['size']
-    _board = game.gameboard
-    _start = game.startpos
-    _end = game.endpos
-    _arw_targets = game.arrow_targets
-
-    du.draw_board(screen, _start, _size, _board,
-                  hide=_end if game.moving or _arw_targets == set() else None,
-                  selected=game.selecting_square,
-                  is_black=game.my_color == 'B')
-
-    # 可能な移動先の表示
-    if _start is not None and _end is None:
-      _piece = _board[_start]
-      du.draw_available_moves(
-          screen, _size, set(game.valid_moves(_piece, _start)),
-          change_color_condition=game.playersturn != _piece.color,
-          is_black=game.my_color == 'B',
-      )
-    # アーチャーの矢の攻撃対象の表示
-    if _arw_targets:
-      du.draw_arrow_target(screen, _size, game.arrow_targets, game.my_color == 'B')
-
-    # プロモーション
-    if game.prom:
-      _draw_promotion_balloon()
-    # キャスリングするかどうかの確認
-    if game.confirm_castling:
-      _draw_castling_confirmation()
-
-    # 駒の価値の表示
-    if game.show_value:
-      _draw_piece_value()
-    # ヘルプの表示
-    if game.show_user_guide:
-      _draw_user_guide()
-    # ゲーム選択メニューに戻るかの確認
-    if game.alert:
-      _draw_alert()
-
-    _draw_animations()
-
-    du.draw_cmd(screen, game.cmd_repeat_num, game.dest_cmd)
+    _draw_game()
 
   pygame.display.update()
