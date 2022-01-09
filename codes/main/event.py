@@ -202,94 +202,100 @@ def _nav_square_key_event(key: int, shift: int, sel_sq: Optional[Position], rep:
   # [h][j][k][l] 左/下/上/右のマスを選択
   # [H][J][K][L] 左/下/上/右の次の駒があるマスを選択
   # [e][r][d][f] 左上/右上/左下/右下のマスを選択
-  if key in (pygame.K_h, pygame.K_j, pygame.K_k, pygame.K_l,
-             pygame.K_e, pygame.K_r, pygame.K_d, pygame.K_f):
-    game.show_value = False
-    game.show_user_guide = False
-    game.cmd_repeat_num = None
+  if key not in (pygame.K_h, pygame.K_j, pygame.K_k, pygame.K_l,
+                 pygame.K_e, pygame.K_r, pygame.K_d, pygame.K_f):
+    return
 
-    _left_key = pygame.K_l if _revesed else pygame.K_h
-    _down_key = pygame.K_k if _revesed else pygame.K_j
-    _up_key = pygame.K_j if _revesed else pygame.K_k
-    _right_key = pygame.K_h if _revesed else pygame.K_l
-    _lu_key = pygame.K_f if _revesed else pygame.K_e
-    _ru_key = pygame.K_d if _revesed else pygame.K_r
-    _ld_key = pygame.K_r if _revesed else pygame.K_d
-    _rd_key = pygame.K_e if _revesed else pygame.K_f
+  game.show_value = False
+  game.show_user_guide = False
+  game.cmd_repeat_num = None
 
-    if sel_sq is None:
-      game.selecting_square = game.startpos or (0, 0)
-    elif key == _left_key and sel_sq[0] > 0:
-      if shift:
-        _x_list = sorted(x for x, y in game.gameboard if x < sel_sq[0] and y == sel_sq[1])
-        if len(_x_list) > 0:
-          _new_x = _x_list[-min(len(_x_list), rep)]
-        else:
-          return
+  _left_key = pygame.K_l if _revesed else pygame.K_h
+  _down_key = pygame.K_k if _revesed else pygame.K_j
+  _up_key = pygame.K_j if _revesed else pygame.K_k
+  _right_key = pygame.K_h if _revesed else pygame.K_l
+  _lu_key = pygame.K_f if _revesed else pygame.K_e
+  _ru_key = pygame.K_d if _revesed else pygame.K_r
+  _ld_key = pygame.K_r if _revesed else pygame.K_d
+  _rd_key = pygame.K_e if _revesed else pygame.K_f
+
+  if sel_sq is None:
+    game.selecting_square = game.startpos or (0, 0)
+  elif key == _left_key and sel_sq[0] > 0:
+    if shift:
+      _x_list = sorted(x for x, y in game.gameboard if x < sel_sq[0] and y == sel_sq[1])
+      if len(_x_list) > 0:
+        _new_x = _x_list[-min(len(_x_list), rep)]
       else:
-        _new_x = max(0, sel_sq[0] - rep)
-      game.selecting_square = _new_x, sel_sq[1]
-    elif key == _down_key and sel_sq[1] > 0:
-      if shift:
-        _y_list = sorted(y for x, y in game.gameboard if x == sel_sq[0] and y < sel_sq[1])
-        if len(_y_list) > 0:
-          _new_y = _y_list[-min(len(_y_list), rep)]
-        else:
-          return
+        return
+    else:
+      _new_x = max(0, sel_sq[0] - rep)
+    game.selecting_square = _new_x, sel_sq[1]
+  elif key == _down_key and sel_sq[1] > 0:
+    if shift:
+      _y_list = sorted(y for x, y in game.gameboard if x == sel_sq[0] and y < sel_sq[1])
+      if len(_y_list) > 0:
+        _new_y = _y_list[-min(len(_y_list), rep)]
       else:
-        _new_y = max(0, sel_sq[1] - rep)
-      game.selecting_square = sel_sq[0], _new_y
-    elif key == _up_key and sel_sq[1] < _size - 1:
-      if shift:
-        _y_list = sorted(y for x, y in game.gameboard if x == sel_sq[0] and y > sel_sq[1])
-        if len(_y_list) > 0:
-          _new_y = _y_list[min(len(_y_list), rep) - 1]
-        else:
-          return
+        return
+    else:
+      _new_y = max(0, sel_sq[1] - rep)
+    game.selecting_square = sel_sq[0], _new_y
+  elif key == _up_key and sel_sq[1] < _size - 1:
+    if shift:
+      _y_list = sorted(y for x, y in game.gameboard if x == sel_sq[0] and y > sel_sq[1])
+      if len(_y_list) > 0:
+        _new_y = _y_list[min(len(_y_list), rep) - 1]
       else:
-        _new_y = min(_size - 1, sel_sq[1] + rep)
-      game.selecting_square = sel_sq[0], _new_y
-    elif key == _right_key and sel_sq[0] < _size - 1:
-      if shift:
-        _x_list = sorted(x for x, y in game.gameboard if x > sel_sq[0] and y == sel_sq[1])
-        if len(_x_list) > 0:
-          _new_x = _x_list[min(len(_x_list), rep) - 1]
-        else:
-          return
+        return
+    else:
+      _new_y = min(_size - 1, sel_sq[1] + rep)
+    game.selecting_square = sel_sq[0], _new_y
+  elif key == _right_key and sel_sq[0] < _size - 1:
+    if shift:
+      _x_list = sorted(x for x, y in game.gameboard if x > sel_sq[0] and y == sel_sq[1])
+      if len(_x_list) > 0:
+        _new_x = _x_list[min(len(_x_list), rep) - 1]
       else:
-        _new_x = min(_size - 1, sel_sq[0] + rep)
-      game.selecting_square = _new_x, sel_sq[1]
-    elif key == _lu_key and sel_sq[0] > 0 and sel_sq[1] < _size - 1:
-      game.selecting_square = max(0, sel_sq[0] - rep), min(_size - 1, sel_sq[1] + rep)
-    elif key == _ru_key and sel_sq[0] < _size - 1 and sel_sq[1] < _size - 1:
-      game.selecting_square = min(_size - 1, sel_sq[0] + rep), min(_size - 1, sel_sq[1] + rep)
-    elif key == _ld_key and sel_sq[0] > 0 and sel_sq[1] > 0:
-      game.selecting_square = max(0, sel_sq[0] - rep), max(0, sel_sq[1] - rep)
-    elif key == _rd_key and sel_sq[0] < _size - 1 and sel_sq[1] > 0:
-      game.selecting_square = min(_size - 1, sel_sq[0] + rep), max(0, sel_sq[1] - rep)
+        return
+    else:
+      _new_x = min(_size - 1, sel_sq[0] + rep)
+    game.selecting_square = _new_x, sel_sq[1]
+  elif key == _lu_key and sel_sq[0] > 0 and sel_sq[1] < _size - 1:
+    game.selecting_square = max(0, sel_sq[0] - rep), min(_size - 1, sel_sq[1] + rep)
+  elif key == _ru_key and sel_sq[0] < _size - 1 and sel_sq[1] < _size - 1:
+    game.selecting_square = min(_size - 1, sel_sq[0] + rep), min(_size - 1, sel_sq[1] + rep)
+  elif key == _ld_key and sel_sq[0] > 0 and sel_sq[1] > 0:
+    game.selecting_square = max(0, sel_sq[0] - rep), max(0, sel_sq[1] - rep)
+  elif key == _rd_key and sel_sq[0] < _size - 1 and sel_sq[1] > 0:
+    game.selecting_square = min(_size - 1, sel_sq[0] + rep), max(0, sel_sq[1] - rep)
 
 
 def _select_candidates_key_event(key: int, shift: int, sel_sq: Optional[Position], rep: int):
   '''行先・矢のターゲットの候補を選択'''
   # [n]/[N] 次/前の候補を選択
-  if key == pygame.K_n:
-    game.show_value = False
-    game.show_user_guide = False
-    game.cmd_repeat_num = None
-    _pos_candidates = None
-    # 矢のターゲット
-    if game.arrow_targets:
-      _pos_candidates = sorted(game.arrow_targets)
-    # 行先
-    elif game.startpos is not None:
-      _pos_candidates = game.valid_moves(game.gameboard[game.startpos], game.startpos)
-    # 候補の選択
-    if _pos_candidates is not None:
-      if sel_sq in _pos_candidates:
-        _new_index = (_pos_candidates.index(sel_sq) + (-rep if shift else rep)) % len(_pos_candidates)
-      else:
-        _new_index = -rep if shift else 0
-      game.selecting_square = _pos_candidates[_new_index]
+  if key != pygame.K_n:
+    return
+
+  game.show_value = False
+  game.show_user_guide = False
+  game.cmd_repeat_num = None
+  _pos_candidates = None
+  # 矢のターゲット
+  if game.arrow_targets:
+    _pos_candidates = sorted(game.arrow_targets)
+  # 行先
+  elif game.startpos is not None:
+    _pos_candidates = game.valid_moves(game.gameboard[game.startpos], game.startpos)
+  # 候補の選択
+  if _pos_candidates is None:
+    return
+
+  if sel_sq in _pos_candidates:
+    _new_index = (_pos_candidates.index(sel_sq) + (-rep if shift else rep)) % len(_pos_candidates)
+  else:
+    _new_index = -rep if shift else 0
+  game.selecting_square = _pos_candidates[_new_index]
 
 
 def _select_square_key_event(key: int, shift: int):
@@ -322,23 +328,25 @@ def _pieces_action_key_event(key: int, shift: int):
 
 def _promotion_mouse_event(mpos: MousePos):
   '''プロモーション先の選択'''
-  if game.prom:
-    assert game.kind is not None
-    assert game.endpos is not None
-    _num = len(game.kind['promote2'])
-    _piece_size = int(du.square_size(game.kind['size']))
-    _area_size = _piece_size + 30
-    _rect_width = _area_size * (_num % 4 if _num < 4 else 4)
-    _rect_height = _area_size * (1 + (_num - 1) // 4)
-    _rect_left = 480 - _rect_width // 2
-    _rect_top = 480 - _rect_height // 2
-    for i in range(_num):
-      if du.on_button(mpos, (
-          _rect_left + _area_size * (i % 4),
-          _rect_top + _area_size * (i // 4),
-      ), (_area_size, _area_size)):
-        eu.promotion_event(i)
-        return
+  if not game.prom:
+    return
+
+  assert game.kind is not None
+  assert game.endpos is not None
+  _num = len(game.kind['promote2'])
+  _piece_size = int(du.square_size(game.kind['size']))
+  _area_size = _piece_size + 30
+  _rect_width = _area_size * (_num % 4 if _num < 4 else 4)
+  _rect_height = _area_size * (1 + (_num - 1) // 4)
+  _rect_left = 480 - _rect_width // 2
+  _rect_top = 480 - _rect_height // 2
+  for i in range(_num):
+    if du.on_button(mpos, (
+        _rect_left + _area_size * (i % 4),
+        _rect_top + _area_size * (i // 4),
+    ), (_area_size, _area_size)):
+      eu.promotion_event(i)
+      return
 
 
 def _promotion_key_event(key: int):
@@ -368,20 +376,22 @@ def _promotion_key_event(key: int):
 
 def _castling_confirmation_mouse_event(mpos: MousePos):
   '''キャスリングするかどうかの確認'''
-  if game.confirm_castling:
-    # する
-    _on_yes_button = du.on_button(mpos, (360, 480), (90, 60))
-    _on_no_button = False
-    if _on_yes_button:
-      game.do_castling = True
-    else:
-      # しない
-      _on_no_button = du.on_button(mpos, (510, 480), (90, 60))
-      if _on_no_button:
-        game.do_castling = False
+  if not game.confirm_castling:
+    return
 
-    if _on_yes_button or _on_no_button:
-      eu.castling_event()
+  # する
+  _on_yes_button = du.on_button(mpos, (360, 480), (90, 60))
+  _on_no_button = False
+  if _on_yes_button:
+    game.do_castling = True
+  else:
+    # しない
+    _on_no_button = du.on_button(mpos, (510, 480), (90, 60))
+    if _on_no_button:
+      game.do_castling = False
+
+  if _on_yes_button or _on_no_button:
+    eu.castling_event()
 
 
 def _castling_confirmation_key_event(key: int):
@@ -394,6 +404,21 @@ def _castling_confirmation_key_event(key: int):
     game.do_castling = False
   if key in (pygame.K_y, pygame.K_n):
     eu.castling_event()
+
+
+def _board_back_forward_key_event(key: int):
+  '''盤面を戻したり進めたりするキーボードイベント'''
+  if game.prom or game.confirm_castling or game.moving or game.arrow_targets != set():
+    return
+
+  # [z] 一手戻す
+  if key == pygame.K_z:
+    game.prev_move()
+    if game.mode == 'PvsC':
+      game.prev_move()
+  # [x] 一手進める
+  elif key == pygame.K_x:
+    game.next_move()
 
 
 def _game_key_event(key: int, mod: int):
@@ -443,56 +468,59 @@ def _game_key_event(key: int, mod: int):
     if key == pygame.K_l and mod & pygame.KMOD_CTRL:
       game.load_data()
       return
-    if not game.prom and not game.confirm_castling and not game.moving and game.arrow_targets == set():
-      # [z] 一手戻す
-      if key == pygame.K_z:
-        game.prev_move()
-        if game.mode == 'PvsC':
-          game.prev_move()
-        return
-      # [x] 一手進める
-      if key == pygame.K_x:
-        game.next_move()
-        return
+    # [z] / [x] 一手戻す / 進める
+    _board_back_forward_key_event(key)
+
+
+def _left_mouse_event(pos: MousePos):
+  '''左クリックイベント'''
+  # ゲームの種類の選択
+  if game.select_game:
+    _select_game_mouse_event(pos)
+    return
+  # 色・モードなどの設定
+  elif game.select_color:
+    _settings_mouse_event(pos)
+    return
+
+  # ゲーム
+  if game.alert:
+    _back_to_home_mouse_event(pos)
+  elif not game.show_value and not game.show_user_guide:
+    _pieces_action_mouse_event(pos)
+    _promotion_mouse_event(pos)
+    _castling_confirmation_mouse_event(pos)
+  game.selecting_square = game.cmd_repeat_num = game.dest_cmd = None
+
+
+def _right_mouse_event(pos: MousePos):
+  '''右クリックイベント'''
+  assert game.kind is not None
+  _pointing_coord = du.parse_mouse(pos, game.kind['size'], game.my_color == 'B')
+  if (_pointing_coord in game.gameboard
+      and not game.alert
+      and not game.show_value
+          and not game.show_user_guide):
+    # 駒の説明を表示
+    assert _pointing_coord is not None
+    game.piece_for_description = game.gameboard[_pointing_coord].__class__.__name__
+    game.time = 0
+  else:
+    # 駒選択解除
+    game.startpos, game.endpos = None, None
 
 
 def _mouse_event(pos: MousePos, button: int):
   '''マウス'''
   # 左
   if button == 1:
-    # ゲームの種類の選択
-    if game.select_game:
-      _select_game_mouse_event(pos)
-    # 色・モードなどの設定
-    elif game.select_color:
-      _settings_mouse_event(pos)
-    # ゲーム
-    else:
-      if game.alert:
-        _back_to_home_mouse_event(pos)
-      elif not game.show_value and not game.show_user_guide:
-        _pieces_action_mouse_event(pos)
-        _promotion_mouse_event(pos)
-        _castling_confirmation_mouse_event(pos)
-      game.selecting_square = game.cmd_repeat_num = game.dest_cmd = None
+    _left_mouse_event(pos)
   # 右
   elif (button == 3
         and not (game.select_game or game.select_color)
         and not game.prom
         and not game.confirm_castling):
-    assert game.kind is not None
-    _pointing_coord = du.parse_mouse(pos, game.kind['size'], game.my_color == 'B')
-    if (_pointing_coord in game.gameboard
-        and not game.alert
-        and not game.show_value
-            and not game.show_user_guide):
-      # 駒の説明を表示
-      assert _pointing_coord is not None
-      game.piece_for_description = game.gameboard[_pointing_coord].__class__.__name__
-      game.time = 0
-    else:
-      # 駒選択解除
-      game.startpos, game.endpos = None, None
+    _right_mouse_event(pos)
 
 
 def _key_event(key: int, mod: int):

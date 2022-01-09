@@ -185,11 +185,12 @@ class Orphan(Piece):
 
     ret: 'set[Type[Piece]]' = set()
     for pos, piece in gameboard.items():
-      if (piece.color != self.color and piece.abbr not in ('Fr', 'Op')):
-        # 対象が敵の駒であってフレンド・オーファンでない
-        if (x, y) in piece.available_moves(*pos, gameboard, size=size):
-          # 対象の駒に攻撃されているとき、その駒の種類を追加
-          ret.add(type(piece))
+      # 対象が敵の駒であってフレンド・オーファンでない
+      # 対象の駒に攻撃されている
+      if (piece.color != self.color and piece.abbr not in ('Fr', 'Op')
+              and (x, y) in piece.available_moves(*pos, gameboard, size=size)):
+        # その駒の種類を追加
+        ret.add(type(piece))
     self.compounded_normal_pieces_memo = ret
     return ret
 
@@ -236,12 +237,13 @@ class Friend(Piece):
     tmp_board = copy(gameboard)
     tmp_board[(x, y)] = type(self)(opponent[self.color])
     for pos, piece in gameboard.items():
-      if (piece.color == self.color and piece.abbr not in ('Fr', 'Op')):
-        # 対象が味方の駒であってフレンド・オーファンでない
-        if (x, y) in piece.available_moves(
-                *pos, tmp_board, size=size):
-          # 対象の駒に守られているとき、その駒の種類を追加
-          ret.add(type(piece))
+      # 対象が味方の駒であってフレンド・オーファンでない
+      # 対象の駒に守られている
+      if (piece.color == self.color and piece.abbr not in ('Fr', 'Op')
+          and (x, y) in piece.available_moves(
+              *pos, tmp_board, size=size)):
+        # その駒の種類を追加
+        ret.add(type(piece))
     self.compounded_normal_pieces_memo = ret
     return ret
 
@@ -275,20 +277,22 @@ def _propagate(self: Union[Orphan, Friend], color: Color, abbr: Literal['Op', 'F
 
   for pos in _moves:
     target = gameboard.get(pos)
-    if target and target.abbr == abbr:
-      target = cast(Union[Orphan, Friend], target)
-      if target.tmp_potentials == set():
-        target.tmp_potentials |= target.compounded_normal_pieces(*pos, gameboard, size)
-      if target.tmp_potentials != self.tmp_potentials:
-        target.tmp_potentials |= self.tmp_potentials
-        _propagate(target, target.color, 'Op', *pos, gameboard, size)
-        _propagate(target, opponent[target.color], 'Fr', *pos, gameboard, size)
-      if target.tmp_potentials != target.res_potentials:
-        target.res_potentials |= target.tmp_potentials
-        _res_moves: PositionSet = set()
-        for piece in target.res_potentials:
-          _res_moves |= piece(target.color).available_moves(*pos, gameboard, size=size)
-        target.tmp_moves = _res_moves
+    if target is None or target.abbr != abbr:
+      continue
+
+    target = cast(Union[Orphan, Friend], target)
+    if target.tmp_potentials == set():
+      target.tmp_potentials |= target.compounded_normal_pieces(*pos, gameboard, size)
+    if target.tmp_potentials != self.tmp_potentials:
+      target.tmp_potentials |= self.tmp_potentials
+      _propagate(target, target.color, 'Op', *pos, gameboard, size)
+      _propagate(target, opponent[target.color], 'Fr', *pos, gameboard, size)
+    if target.tmp_potentials != target.res_potentials:
+      target.res_potentials |= target.tmp_potentials
+      _res_moves: PositionSet = set()
+      for piece in target.res_potentials:
+        _res_moves |= piece(target.color).available_moves(*pos, gameboard, size=size)
+      target.tmp_moves = _res_moves
 
 
 '動いた後に攻撃する（アーチャー系）'

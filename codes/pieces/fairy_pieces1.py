@@ -13,6 +13,11 @@ from pieces.pieces import *
 from pieces.piece_utils import *
 
 
+def capturing_moves(ls, gameboard, color, size):
+  return {pos for pos in ls
+          if (pos in gameboard and no_conflict(gameboard, color, *pos, size=size))}
+
+
 class Custom(Piece):
   '''Piece Dictionary用の駒'''
   abbr = '_'
@@ -50,8 +55,7 @@ class Tank(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       move = rider(x, y, gameboard, self.color, dir8(0, 1), size, move_only=True)
-      self.tmp_moves = move | {pos for pos in capture
-                               if (pos in gameboard and no_conflict(gameboard, self.color, *pos, size=size))}
+      self.tmp_moves = move | capturing_moves(capture, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -135,8 +139,7 @@ class Tiger(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       move = leaper(x, y, gameboard, self.color, list(king_move), move_only=True, size=size)
-      self.tmp_moves = move | {pos for pos in capture
-                               if (pos in gameboard and no_conflict(gameboard, self.color, *pos, size=size))}
+      self.tmp_moves = move | capturing_moves(capture, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -170,8 +173,7 @@ class Deer(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       move = leaper(x, y, gameboard, self.color, dir8(1, 2), move_only=True, size=size)
-      self.tmp_moves = move | {pos for pos in capture
-                               if (pos in gameboard and no_conflict(gameboard, self.color, *pos, size=size))}
+      self.tmp_moves = move | capturing_moves(capture, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -243,17 +245,18 @@ class Octagram(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
+      dirs = dir8(1, 2)
       self.tmp_moves = (Knight(self.color).available_moves(x, y, gameboard, **kwargs)
                         | slide_leaper(x, y, gameboard, self.color, size,
-                                       [[i] for i in dir8(1, 2)],
-                                       [[dir8(1, 2)[6]] + [dir8(1, 2)[2]],
-                                           [dir8(1, 2)[7]] + [dir8(1, 2)[3]],
-                                           [dir8(1, 2)[0]] + [dir8(1, 2)[4]],
-                                           [dir8(1, 2)[1]] + [dir8(1, 2)[5]],
-                                           [dir8(1, 2)[2]] + [dir8(1, 2)[6]],
-                                           [dir8(1, 2)[3]] + [dir8(1, 2)[7]],
-                                           [dir8(1, 2)[4]] + [dir8(1, 2)[0]],
-                                           [dir8(1, 2)[5]] + [dir8(1, 2)[1]]]))
+                                       [[i] for i in dirs],
+                                       [[dirs[6], dirs[2]],
+                                           [dirs[7], dirs[3]],
+                                           [dirs[0], dirs[4]],
+                                           [dirs[1], dirs[5]],
+                                           [dirs[2], dirs[6]],
+                                           [dirs[3], dirs[7]],
+                                           [dirs[4], dirs[0]],
+                                           [dirs[5], dirs[1]]]))
     return self.tmp_moves
 
 
@@ -345,6 +348,10 @@ class ReflectingQueen4(Piece):
     return self.tmp_moves
 
 
+def math_leaper_moves(ls: 'list[int]'):
+  return sum([dist_dir(i) for i in ls], [])
+
+
 class PrimeLeaper(Piece):
   abbr = 'PrL'
   value = 29.0
@@ -352,7 +359,7 @@ class PrimeLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in primes], []), kwargs['size']))
+                       math_leaper_moves(primes), kwargs['size']))
 
 
 class FibonacciLeaper(Piece):
@@ -362,7 +369,7 @@ class FibonacciLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in fibos], []), kwargs['size']))
+                       math_leaper_moves(fibos), kwargs['size']))
 
 
 class TribonacciLeaper(Piece):
@@ -372,7 +379,7 @@ class TribonacciLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in tribos], []), kwargs['size']))
+                       math_leaper_moves(tribos), kwargs['size']))
 
 
 class TetranacciLeaper(Piece):
@@ -382,7 +389,7 @@ class TetranacciLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in tetras], []), kwargs['size']))
+                       math_leaper_moves(tetras), kwargs['size']))
 
 
 class PentanacciLeaper(Piece):
@@ -392,7 +399,7 @@ class PentanacciLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in pentas], []), kwargs['size']))
+                       math_leaper_moves(pentas), kwargs['size']))
 
 
 class LucasLeaper(Piece):
@@ -402,7 +409,7 @@ class LucasLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in lucas], []), kwargs['size']))
+                       math_leaper_moves(lucas), kwargs['size']))
 
 
 class PellLeaper(Piece):
@@ -412,7 +419,7 @@ class PellLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in pells], []), kwargs['size']))
+                       math_leaper_moves(pells), kwargs['size']))
 
 
 class PerrinLeaper(Piece):
@@ -422,7 +429,7 @@ class PerrinLeaper(Piece):
   def available_moves(self, x, y, gameboard, **kwargs):
     return self.prune(gameboard, leaper,
                       (x, y, gameboard, self.color,
-                       sum([dist_dir(i) for i in perrins], []), kwargs['size']))
+                       math_leaper_moves(perrins), kwargs['size']))
 
 
 class PythagorasLeaper(Piece):
@@ -435,6 +442,21 @@ class PythagorasLeaper(Piece):
                        sum([dist_dir(i ** 2) for i in range(15)], []), kwargs['size']))
 
 
+def math_leaper2_moves(ls: 'list[int]', lim: int, x, y, gameboard, color, size):
+  a = [dist_dir(i) for i in ls]
+  a = cast('list[PositionList]', a)
+  _ = [{tuple(k[m] for k in a if k != [])[:j]:
+        [[k[m] for k in a if k != []][j]]
+        for j in range(lim)} for m in range(8)]
+  moves = set()
+  for i in range(8):
+    moves |= slide_leaper(x, y, gameboard, color, size,
+                          list(map(list, _[i].keys())),
+                          list(_[i].values()),
+                          absolute='dest')
+  return moves
+
+
 class PrimeLeaper2(Piece):
   abbr = 'PrL2'
   value = 23.2
@@ -443,17 +465,7 @@ class PrimeLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in primes]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(7)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(primes, 7, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -465,17 +477,7 @@ class FibonacciLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in fibos]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(8)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(fibos, 8, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -487,17 +489,7 @@ class TribonacciLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in tribos]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(7)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(tribos, 7, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -509,17 +501,7 @@ class TetranacciLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in tetras]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(6)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(tetras, 6, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -531,17 +513,7 @@ class PentanacciLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in pentas]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(7)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(pentas, 7, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -553,17 +525,7 @@ class LucasLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in lucas]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(6)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(lucas, 6, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -575,17 +537,7 @@ class PellLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in pells]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(5)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(pells, 5, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 
@@ -597,17 +549,7 @@ class PerrinLeaper2(Piece):
     if gameboard != self.seen_board:
       self.seen_board = copy(gameboard)
       size = kwargs['size']
-      a = [dist_dir(i) for i in perrins]
-      a = cast('list[PositionList]', a)
-      _ = [{tuple(k[m] for k in a if k != [])[:j]:
-            [[k[m] for k in a if k != []][j]]
-            for j in range(9)} for m in range(8)]
-      self.tmp_moves = set()
-      for i in range(8):
-        self.tmp_moves |= slide_leaper(x, y, gameboard, self.color, size,
-                                       list(map(list, _[i].keys())),
-                                       list(_[i].values()),
-                                       absolute='dest')
+      self.tmp_moves = math_leaper2_moves(perrins, 9, x, y, gameboard, self.color, size)
     return self.tmp_moves
 
 

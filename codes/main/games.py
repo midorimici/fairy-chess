@@ -77,11 +77,16 @@ _krns: 'list[list[Type[Piece]]]' = [
 ]
 
 
-def init_960():
-  '''チェス 960 における駒の配置の決定'''
+def generate_krn_code():
   pos_id = randint(0, 959)
   while pos_id == 518:
     pos_id = randint(0, 959)
+  return pos_id
+
+
+def init_960():
+  '''チェス 960 における駒の配置の決定'''
+  pos_id = generate_krn_code()
 
   placers: 'list[Optional[Type[Piece]]]' = [None] * 8
 
@@ -93,12 +98,11 @@ def init_960():
 
   q, r = q // 6, q % 6
   for i in range(8):
-    if placers[i] is None:
-      if i == r:
-        placers[i] = Queen
-        break
-    else:
+    if placers[i] is not None:
       r += 1
+    elif i == r:
+      placers[i] = Queen
+      break
 
   for piece in _krns[q]:
     placers[placers.index(None)] = piece

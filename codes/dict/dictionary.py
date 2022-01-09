@@ -62,14 +62,18 @@ class Game:
   def main(self):
     '''盤面の状態の変更'''
     startpos, endpos = self.startpos, self.endpos
-    if startpos is not None and endpos is not None:
-      target = self.gameboard.get(startpos)
-      if target:
-        # 駒を動かした回数によって動きが変わる駒が動いた
-        if hasattr(target, 'count'):
-          target.count += 1
-        # 通常の動き
-        self.renew_gameboard(startpos, endpos, self.gameboard)
+    if startpos is None or endpos is None:
+      return
+
+    target = self.gameboard.get(startpos)
+    if target is None:
+      return
+
+    # 駒を動かした回数によって動きが変わる駒が動いた
+    if hasattr(target, 'count'):
+      target.count += 1
+    # 通常の動き
+    self.renew_gameboard(startpos, endpos, self.gameboard)
 
   def valid_moves(self, piece: Piece, startpos: Position, gameboard: Board) -> PositionSet:
     '''

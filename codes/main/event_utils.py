@@ -2,9 +2,10 @@ from copy import copy
 from typing import Optional, cast
 
 from custom_types import Color, Mode, Position
-from games import games, init_960, Placers
+from games import GameType, games, init_960, Placers
 from main_config import game, cancel_snd, capture_snd, move_snd, select_snd, play
 import pieces.piece_utils as pu
+from pieces.piece import Piece
 import utils
 
 
@@ -104,51 +105,84 @@ def archer_attack_event(pos: Optional[Position]):
 
 def move_pieces_event(pos: Optional[Position]):
   '''駒の移動'''
-  assert game.kind is not None
-  _start = game.startpos
   _board = game.gameboard
   # 駒を移動させる
   # 先にこちらを書かないと駒を取れなくなる
-  if _start is not None:
-    _piece = _board[_start]
-    if _piece.color == game.playersturn and pos in game.valid_moves(_piece, _start):
-      game.endpos = pos
-
-      # キャスリングの確認をするか決定
-      if game.kind['castling']:
-        game.castle_or_not(_piece, game.endpos)
-        if game.confirm_castling:
-          return
-
-      # アーチャー系駒の攻撃が発生する条件
-      # アーチャー系駒であることを示す属性が存在する
-      # 移動で取ったときには矢は撃てない
-      if hasattr(_piece, 'archer_dir') and game.endpos not in _board:
-        # その動きで自分側がチェックされるとき
-        _tmp_board = copy(_board)
-        _tmp_board[game.endpos] = _piece
-        del _tmp_board[_start]
-        if game.is_check(game.playersturn, _tmp_board):
-          # 取り除かなければならない駒のみに撃てる
-          game.arrow_targets = game.arrow_targets_should_removed
-          game.arrow_targets_should_removed = set()
-        else:
-          # その発射で自分側がチェック状態にならない場所のみに撃てる
-          game.arrow_targets = (set(utils.arrow_targets_(_piece, _start, game.endpos, _board, pu.rider))
-                                - set(game.disallowed_targets))
-          game.disallowed_targets = set()
-          if game.arrow_targets:
-            # 自分の位置にも表示し、矢を打たないというオプションとする
-            game.arrow_targets.add(game.endpos)
-
-      game.main()
-      game.time = 0
-      game.moving = True
-      play(move_snd)
-      return
+  should_exit = move_piece(pos)
+  if should_exit:
+    return
   # 動かす駒を選択する
   if pos in _board and not game.prom and not game.confirm_castling:
     game.startpos, game.endpos = pos, None
+
+
+def move_piece(pos: Optional[Position]) -> bool:
+  '''駒を動かす処理をし、駒移動マウスイベントを終了させるべきかを返す'''
+  assert game.kind is not None
+  _start = game.startpos
+  if _start is None:
+    return False
+
+  _piece = game.gameboard[_start]
+  if _piece.color != game.playersturn or pos not in game.valid_moves(_piece, _start):
+    return False
+
+  assert pos is not None
+  game.endpos = pos
+
+  # キャスリングの確認をするか決定
+  if check_if_confirm_castling(game.kind, _piece, game.endpos):
+    return True
+
+  # アーチャー系駒の処理
+  handle_archer(_piece)
+
+  game.main()
+  game.time = 0
+  game.moving = True
+  play(move_snd)
+
+  return True
+
+
+def check_if_confirm_castling(kind: GameType, piece: Piece, endpos: Position):
+  '''キャスリング確認をするか決定する処理'''
+  if kind['castling']:
+    game.castle_or_not(piece, endpos)
+    if game.confirm_castling:
+      return True
+
+
+def handle_archer(piece: Piece):
+  '''アーチャー系駒の移動を処理する'''
+  _start = game.startpos
+  _end = game.endpos
+  assert _start is not None
+  assert _end is not None
+  _board = game.gameboard
+  # アーチャー系駒の攻撃が発生する条件
+  # アーチャー系駒であることを示す属性が存在する
+  # 移動で取ったときには矢は撃てない
+  if not hasattr(piece, 'archer_dir') or _end in _board:
+    return
+
+  # その動きで自分側がチェックされるとき
+  _tmp_board = copy(_board)
+  _tmp_board[_end] = piece
+  del _tmp_board[_start]
+  if game.is_check(game.playersturn, _tmp_board):
+    # 取り除かなければならない駒のみに撃てる
+    game.arrow_targets = game.arrow_targets_should_removed
+    game.arrow_targets_should_removed = set()
+    return
+
+  # その発射で自分側がチェック状態にならない場所のみに撃てる
+  game.arrow_targets = (set(utils.arrow_targets_(piece, _start, _end, _board, pu.rider))
+                        - set(game.disallowed_targets))
+  game.disallowed_targets = set()
+  if game.arrow_targets:
+    # 自分の位置にも表示し、矢を打たないというオプションとする
+    game.arrow_targets.add(_end)
 
 
 def promotion_event(index: int):
